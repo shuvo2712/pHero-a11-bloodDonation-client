@@ -9,6 +9,7 @@ import Search from "../pages/Search";
 import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Profile from "../pages/Profile";
+import CreateDonationRequest from "../pages/CreateDonationRequest";
 
 const router = createBrowserRouter([
   {
@@ -61,7 +62,7 @@ const router = createBrowserRouter([
       },
       {
         path: "create-donation-request",
-        element: <div className="text-xl font-bold">Create Donation Request Page (Placeholder)</div>,
+        element: <CreateDonationRequest />,
       },
       {
         path: "all-users",
