@@ -3,6 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
 import ErrorPage from "../pages/ErrorPage";
 import DonationRequests from "../pages/DonationRequests";
+import DonationRequestDetails from "../pages/DonationRequestDetails";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Search from "../pages/Search";
@@ -27,6 +28,14 @@ const router = createBrowserRouter([
       {
         path: "/donation-requests",
         element: <DonationRequests />,
+      },
+      {
+        path: "/donation-request/:id",
+        element: (
+          <PrivateRoute>
+            <DonationRequestDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/login",
