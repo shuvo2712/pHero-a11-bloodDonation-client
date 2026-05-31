@@ -82,8 +82,36 @@ const Register = () => {
       // Step 3: Update Firebase profile with name and avatar URL
       await updateUserProfile(name, imageUrl);
 
-      toast.success("Registration successful! Welcome aboard.");
-      navigate("/");
+      // Map district and upazila IDs to their display names
+      const districtName = districts.find(d => String(d.id) === String(selectedDistrict))?.name || "";
+      const upazilaName = upazilas.find(u => String(u.id) === String(selectedUpazila))?.name || "";
+
+      // Step 4: Save user data in MongoDB via server POST endpoint
+      const userData = {
+        name,
+        email,
+        photoURL: imageUrl,
+        bloodGroup,
+        district: districtName,
+        upazila: upazilaName,
+      };
+
+      const dbResponse = await fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const dbData = await dbResponse.json();
+
+      if (dbData.insertedId || dbData.message === "user already exists") {
+        toast.success("Registration successful! Welcome aboard.");
+        navigate("/");
+      } else {
+        toast.error("Failed to save user data to server database.");
+      }
     } catch (error) {
       console.error(error);
       if (error.code === "auth/email-already-in-use") {
