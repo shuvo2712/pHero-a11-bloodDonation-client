@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { AuthContext } from "../providers/AuthProvider";
 import { districts } from "../assets/districts";
 import { upazilas } from "../assets/upazilas";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { createUser, updateUserProfile } = useContext(AuthContext);
 
   // Form Fields State
   const [name, setName] = useState("");
@@ -16,6 +18,7 @@ const Register = () => {
   const [selectedUpazila, setSelectedUpazila] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Cascading Address Dropdowns State
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
@@ -30,14 +33,14 @@ const Register = () => {
         (u) => String(u.district_id) === String(selectedDistrict)
       );
       setFilteredUpazilas(filtered);
-      setSelectedUpazila(""); // Reset selected upazila
+      setSelectedUpazila("");
     } else {
       setFilteredUpazilas([]);
       setSelectedUpazila("");
     }
   }, [selectedDistrict]);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     // Validations
@@ -50,8 +53,49 @@ const Register = () => {
     if (password.length < 6) return toast.error("Password must be at least 6 characters");
     if (password !== confirmPassword) return toast.error("Passwords do not match");
 
-    // UI Simulation (Step 8 is UI only, actual registration logic in Step 9)
-    toast.success("Ready for registration! (Proceed to Step 9 to connect Auth)");
+    setLoading(true);
+
+    try {
+      // Step 1: Upload avatar to ImageBB
+      const imgbbKey = import.meta.env.VITE_IMGBB_API_KEY;
+      const formData = new FormData();
+      formData.append("image", avatar);
+
+      const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const imgData = await imgRes.json();
+
+      if (!imgData.success) {
+        toast.error("Avatar upload failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      const imageUrl = imgData.data.display_url;
+
+      // Step 2: Create Firebase user
+      await createUser(email, password);
+
+      // Step 3: Update Firebase profile with name and avatar URL
+      await updateUserProfile(name, imageUrl);
+
+      toast.success("Registration successful! Welcome aboard.");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("This email is already registered. Please login.");
+      } else if (error.code === "auth/weak-password") {
+        toast.error("Password is too weak. Use at least 6 characters.");
+      } else {
+        toast.error(error.message || "Registration failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,6 +119,7 @@ const Register = () => {
                 className="input input-bordered w-full"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                disabled={loading}
                 required
               />
             </div>
@@ -90,6 +135,7 @@ const Register = () => {
                 className="input input-bordered w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
                 required
               />
             </div>
@@ -104,6 +150,7 @@ const Register = () => {
                 accept="image/*"
                 className="file-input file-input-bordered file-input-primary w-full"
                 onChange={(e) => setAvatar(e.target.files[0] || null)}
+                disabled={loading}
                 required
               />
             </div>
@@ -117,6 +164,7 @@ const Register = () => {
                 className="select select-bordered w-full"
                 value={bloodGroup}
                 onChange={(e) => setBloodGroup(e.target.value)}
+                disabled={loading}
                 required
               >
                 <option value="">Select Blood Group</option>
@@ -137,6 +185,7 @@ const Register = () => {
                 className="select select-bordered w-full"
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
+                disabled={loading}
                 required
               >
                 <option value="">Select District</option>
@@ -157,7 +206,7 @@ const Register = () => {
                 className="select select-bordered w-full"
                 value={selectedUpazila}
                 onChange={(e) => setSelectedUpazila(e.target.value)}
-                disabled={!selectedDistrict}
+                disabled={loading || !selectedDistrict}
                 required
               >
                 <option value="">Select Upazila</option>
@@ -180,6 +229,7 @@ const Register = () => {
                 className="input input-bordered w-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
                 required
               />
             </div>
@@ -195,14 +245,23 @@ const Register = () => {
                 className="input input-bordered w-full"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={loading}
                 required
               />
             </div>
 
             {/* Submit Button */}
             <div className="form-control md:col-span-2 mt-6">
-              <button type="submit" className="btn btn-primary w-full text-white font-bold">
-                Register
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn btn-primary w-full text-white font-bold"
+              >
+                {loading ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  "Register"
+                )}
               </button>
             </div>
           </form>
