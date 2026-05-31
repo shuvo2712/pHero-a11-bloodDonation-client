@@ -8,6 +8,7 @@ import Register from "../pages/Register";
 import Search from "../pages/Search";
 import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -52,7 +53,7 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <div className="text-xl font-bold">My Profile Page (Placeholder)</div>,
+        element: <Profile />,
       },
       {
         path: "my-donation-requests",
