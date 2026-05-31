@@ -6,6 +6,8 @@ import DonationRequests from "../pages/DonationRequests";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Search from "../pages/Search";
+import PrivateRoute from "./PrivateRoute";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +34,41 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <Search />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <div className="text-xl font-bold">Welcome to your Dashboard Home (Placeholder)</div>,
+      },
+      {
+        path: "profile",
+        element: <div className="text-xl font-bold">My Profile Page (Placeholder)</div>,
+      },
+      {
+        path: "my-donation-requests",
+        element: <div className="text-xl font-bold">My Donation Requests Page (Placeholder)</div>,
+      },
+      {
+        path: "create-donation-request",
+        element: <div className="text-xl font-bold">Create Donation Request Page (Placeholder)</div>,
+      },
+      {
+        path: "all-users",
+        element: <div className="text-xl font-bold">All Users Page (Placeholder)</div>,
+      },
+      {
+        path: "all-blood-donation-request",
+        element: <div className="text-xl font-bold">All Blood Donation Requests Page (Placeholder)</div>,
       },
     ],
   },
