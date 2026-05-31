@@ -35,19 +35,39 @@ const DonationRequestDetails = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Mock confirm behavior for Step 29
-    // Full backend integration (connecting route PATCH status) is done in Step 31
-    setTimeout(() => {
-      setRequest((prev) => ({
-        ...prev,
-        donationStatus: "inprogress",
+    fetch(`http://localhost:5000/donation-requests/status/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: "inprogress",
         donorName: user?.displayName || "",
         donorEmail: user?.email || "",
-      }));
-      setIsSubmitting(false);
-      setIsModalOpen(false);
-      toast.success("Thank you! You have committed to this donation.");
-    }, 1000);
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to confirm donation");
+        }
+        return res.json();
+      })
+      .then(() => {
+        setIsSubmitting(false);
+        setIsModalOpen(false);
+        setRequest((prev) => ({
+          ...prev,
+          donationStatus: "inprogress",
+          donorName: user?.displayName || "",
+          donorEmail: user?.email || "",
+        }));
+        toast.success("Thank you! You have successfully committed to this donation.");
+      })
+      .catch((error) => {
+        console.error("Error committing to donation:", error);
+        toast.error("Failed to confirm donation: " + error.message);
+        setIsSubmitting(false);
+      });
   };
 
   if (loading) {
