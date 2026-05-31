@@ -6,9 +6,12 @@ BloodLink is a comprehensive, user-friendly MERN stack (MongoDB, Express.js, Rea
 
 ## 🔗 Project Links
 
-*   **Live Web Application**: [BloodLink Live Site](https://phero-a11-blooddonation.web.app) *(or your deployed custom domain)*
-*   **Client Repository**: [GitHub Client Repo](https://github.com/your-username/bloodlink-client)
-*   **Server Repository**: [GitHub Server Repo](https://github.com/your-username/bloodlink-server)
+*   **Live Web Application**: [BloodLink Live Site] 
+(https://phero-a11-blooddonation.netlify.app/)
+*   **Client Repository**: [GitHub Client Repo] 
+(https://github.com/shuvo2712/pHero-a11-bloodDonation-client)
+*   **Server Repository**: [GitHub Server Repo] 
+(https://github.com/shuvo2712/pHero-a11-bloodDonation-server)
 
 ---
 
