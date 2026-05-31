@@ -30,6 +30,11 @@ const DashboardHome = () => {
   const [recentRequests, setRecentRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
 
+  // Admin/Volunteer stats state
+  const [stats, setStats] = useState({ totalDonors: 0, totalFunding: 0, totalRequests: 0 });
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statusCounts, setStatusCounts] = useState({ pending: 0, inprogress: 0, done: 0, canceled: 0 });
+
   // Delete modal state
   const [requestToDelete, setRequestToDelete] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
@@ -53,12 +58,35 @@ const DashboardHome = () => {
         );
         if (reqsRes.ok) {
           const reqsData = await reqsRes.json();
-          // Endpoint returns { total, requests } when paginated
           setRecentRequests(reqsData.requests || []);
         } else {
           toast.error("Failed to load recent requests.");
         }
         setRequestsLoading(false);
+      }
+
+      // If user is admin or volunteer, fetch admin stats
+      if (profileData.role === "admin" || profileData.role === "volunteer") {
+        setStatsLoading(true);
+        try {
+          const token = localStorage.getItem("token");
+          const statsRes = await fetch("http://localhost:5000/admin/stats", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (statsRes.ok) {
+            const statsData = await statsRes.json();
+            setStats({
+              totalDonors: statsData.totalDonors || 0,
+              totalFunding: statsData.totalFunding || 0,
+              totalRequests: statsData.totalRequests || 0,
+            });
+            setStatusCounts(statsData.statusCounts || { pending: 0, inprogress: 0, done: 0, canceled: 0 });
+          }
+        } catch (e) {
+          console.error("Stats fetch failed:", e);
+        } finally {
+          setStatsLoading(false);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -343,8 +371,10 @@ const DashboardHome = () => {
         /* Admin and Volunteer Dashboard Overview Layout */
         <div className="space-y-6">
           <h2 className="text-xl font-bold text-base-content">Platform Overview</h2>
+
+          {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             {/* Donors Card */}
             <div className="card bg-base-100 shadow-xl border border-base-300">
               <div className="card-body flex-row items-center gap-5 p-6">
@@ -353,7 +383,11 @@ const DashboardHome = () => {
                 </div>
                 <div>
                   <p className="text-sm text-base-content/50 font-bold uppercase tracking-wider">Total Donors</p>
-                  <p className="text-3xl font-extrabold text-base-content mt-1">128</p>
+                  {statsLoading ? (
+                    <span className="loading loading-dots loading-sm text-primary mt-1"></span>
+                  ) : (
+                    <p className="text-3xl font-extrabold text-base-content mt-1">{stats.totalDonors}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -366,7 +400,11 @@ const DashboardHome = () => {
                 </div>
                 <div>
                   <p className="text-sm text-base-content/50 font-bold uppercase tracking-wider">Total Funding</p>
-                  <p className="text-3xl font-extrabold text-base-content mt-1">$4,250</p>
+                  {statsLoading ? (
+                    <span className="loading loading-dots loading-sm text-success mt-1"></span>
+                  ) : (
+                    <p className="text-3xl font-extrabold text-base-content mt-1">${stats.totalFunding.toLocaleString()}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -379,11 +417,54 @@ const DashboardHome = () => {
                 </div>
                 <div>
                   <p className="text-sm text-base-content/50 font-bold uppercase tracking-wider">Donation Requests</p>
-                  <p className="text-3xl font-extrabold text-base-content mt-1">36</p>
+                  {statsLoading ? (
+                    <span className="loading loading-dots loading-sm text-info mt-1"></span>
+                  ) : (
+                    <p className="text-3xl font-extrabold text-base-content mt-1">{stats.totalRequests}</p>
+                  )}
                 </div>
               </div>
             </div>
 
+          </div>
+
+          {/* Status Distribution Chart */}
+          <div className="card bg-base-100 shadow-xl border border-base-300">
+            <div className="card-body p-6">
+              <h3 className="font-extrabold text-base-content mb-4 text-lg">Request Status Breakdown</h3>
+              {statsLoading ? (
+                <div className="flex justify-center py-6">
+                  <span className="loading loading-spinner loading-md text-primary"></span>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {[
+                    { label: "Pending", key: "pending", color: "bg-warning" },
+                    { label: "In Progress", key: "inprogress", color: "bg-info" },
+                    { label: "Done", key: "done", color: "bg-success" },
+                    { label: "Canceled", key: "canceled", color: "bg-neutral" },
+                  ].map(({ label, key, color }) => {
+                    const count = statusCounts[key] || 0;
+                    const total = stats.totalRequests || 1;
+                    const pct = Math.round((count / total) * 100);
+                    return (
+                      <div key={key}>
+                        <div className="flex justify-between text-sm font-semibold mb-1">
+                          <span className="text-base-content/80">{label}</span>
+                          <span className="text-base-content/60">{count} requests ({pct}%)</span>
+                        </div>
+                        <div className="w-full h-3 bg-base-200 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-700 ${color}`}
+                            style={{ width: `${pct}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
