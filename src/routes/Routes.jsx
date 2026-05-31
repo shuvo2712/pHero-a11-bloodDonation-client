@@ -12,6 +12,7 @@ import Profile from "../pages/Profile";
 import CreateDonationRequest from "../pages/CreateDonationRequest";
 import DashboardHome from "../pages/DashboardHome";
 import MyDonationRequests from "../pages/MyDonationRequests";
+import EditDonationRequest from "../pages/EditDonationRequest";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: "create-donation-request",
         element: <CreateDonationRequest />,
+      },
+      {
+        path: "edit-donation-request/:id",
+        element: <EditDonationRequest />,
       },
       {
         path: "all-users",
