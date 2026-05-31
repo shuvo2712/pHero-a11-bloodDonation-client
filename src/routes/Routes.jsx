@@ -11,6 +11,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Profile from "../pages/Profile";
 import CreateDonationRequest from "../pages/CreateDonationRequest";
 import DashboardHome from "../pages/DashboardHome";
+import MyDonationRequests from "../pages/MyDonationRequests";
 
 const router = createBrowserRouter([
   {
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
       },
       {
         path: "my-donation-requests",
-        element: <div className="text-xl font-bold">My Donation Requests Page (Placeholder)</div>,
+        element: <MyDonationRequests />,
       },
       {
         path: "create-donation-request",
