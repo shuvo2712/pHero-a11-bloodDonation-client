@@ -15,6 +15,7 @@ import DashboardHome from "../pages/DashboardHome";
 import MyDonationRequests from "../pages/MyDonationRequests";
 import EditDonationRequest from "../pages/EditDonationRequest";
 import AllUsers from "../pages/AllUsers";
+import AllDonationRequests from "../pages/AllDonationRequests";
 
 const router = createBrowserRouter([
   {
@@ -87,7 +88,7 @@ const router = createBrowserRouter([
       },
       {
         path: "all-blood-donation-request",
-        element: <div className="text-xl font-bold">All Blood Donation Requests Page (Placeholder)</div>,
+        element: <AllDonationRequests />,
       },
     ],
   },
