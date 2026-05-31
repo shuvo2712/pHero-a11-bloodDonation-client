@@ -33,6 +33,7 @@ const Navbar = () => {
     <>
       <li><Link to="/">Home</Link></li>
       <li><Link to="/donation-requests">Donation Requests</Link></li>
+      <li><Link to="/search">Search Donors</Link></li>
       {user && <li><Link to="/funding">Funding</Link></li>}
     </>
   );
