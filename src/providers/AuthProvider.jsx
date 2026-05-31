@@ -40,6 +40,24 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
       setLoading(false);
+
+      if (currentUser) {
+        // Get JWT token from server and store it in localStorage
+        fetch("http://localhost:5000/jwt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: currentUser.email }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.token) {
+              localStorage.setItem("token", data.token);
+            }
+          });
+      } else {
+        // User logged out - remove the token
+        localStorage.removeItem("token");
+      }
     });
     return () => {
       unsubscribe();
