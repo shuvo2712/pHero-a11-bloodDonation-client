@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_URL } from "../api/config";
 import { 
   FaList, 
   FaTrash, 
@@ -38,7 +39,7 @@ const MyDonationRequests = () => {
     if (!user?.email) return;
     setLoading(true);
     try {
-      const url = `http://localhost:5000/donation-requests/user/${user.email}?status=${statusFilter}&page=${page}&limit=${limit}`;
+      const url = `${API_URL}/donation-requests/user/${user.email}?status=${statusFilter}&page=${page}&limit=${limit}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch donation requests.");
       const data = await res.json();
@@ -66,7 +67,7 @@ const MyDonationRequests = () => {
   const handleStatusUpdate = async (requestId, newStatus) => {
     setActionLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/donation-requests/status/${requestId}`, {
+      const res = await fetch(`${API_URL}/donation-requests/status/${requestId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +97,7 @@ const MyDonationRequests = () => {
     if (!requestToDelete) return;
     setActionLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/donation-requests/${requestToDelete._id}`, {
+      const res = await fetch(`${API_URL}/donation-requests/${requestToDelete._id}`, {
         method: "DELETE",
       });
 

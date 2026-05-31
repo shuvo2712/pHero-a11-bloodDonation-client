@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_URL } from "../api/config";
 import { 
   FaUser, 
   FaPlusCircle, 
@@ -45,7 +46,7 @@ const DashboardHome = () => {
     try {
       setLoading(true);
       // Fetch User profile
-      const res = await fetch(`http://localhost:5000/users/${user.email}`);
+      const res = await fetch(`${API_URL}/users/${user.email}`);
       if (!res.ok) throw new Error("Failed to fetch profile");
       const profileData = await res.json();
       setProfile(profileData);
@@ -54,7 +55,7 @@ const DashboardHome = () => {
       if (profileData.role === "donor") {
         setRequestsLoading(true);
         const reqsRes = await fetch(
-          `http://localhost:5000/donation-requests/user/${user.email}?page=1&limit=3`
+          `${API_URL}/donation-requests/user/${user.email}?page=1&limit=3`
         );
         if (reqsRes.ok) {
           const reqsData = await reqsRes.json();
@@ -70,7 +71,7 @@ const DashboardHome = () => {
         setStatsLoading(true);
         try {
           const token = localStorage.getItem("token");
-          const statsRes = await fetch("http://localhost:5000/admin/stats", {
+          const statsRes = await fetch(`${API_URL}/admin/stats`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (statsRes.ok) {
@@ -104,7 +105,7 @@ const DashboardHome = () => {
   const handleStatusUpdate = async (requestId, newStatus) => {
     setActionLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/donation-requests/status/${requestId}`, {
+      const res = await fetch(`${API_URL}/donation-requests/status/${requestId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +139,7 @@ const DashboardHome = () => {
     setActionLoading(true);
 
     try {
-      const res = await fetch(`http://localhost:5000/donation-requests/${requestToDelete._id}`, {
+      const res = await fetch(`${API_URL}/donation-requests/${requestToDelete._id}`, {
         method: "DELETE",
       });
 

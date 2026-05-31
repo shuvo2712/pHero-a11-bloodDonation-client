@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
+import { API_URL } from "../api/config";
 import {
   FaUsers,
   FaFilter,
@@ -33,7 +34,7 @@ const AllUsers = () => {
       const token = localStorage.getItem("token");
       const statusQuery = statusFilter !== "all" ? `&status=${statusFilter}` : "";
       const res = await fetch(
-        `http://localhost:5000/users?${statusQuery}`,
+        `${API_URL}/users?${statusQuery}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -96,10 +97,10 @@ const AllUsers = () => {
       let body = {};
 
       if (action === "block" || action === "unblock") {
-        url = `http://localhost:5000/users/status/${userId}`;
+        url = `${API_URL}/users/status/${userId}`;
         body = { status: action === "block" ? "blocked" : "active" };
       } else if (action === "make-admin" || action === "make-volunteer") {
-        url = `http://localhost:5000/users/role/${userId}`;
+        url = `${API_URL}/users/role/${userId}`;
         body = { role: action === "make-admin" ? "admin" : "volunteer" };
       }
 

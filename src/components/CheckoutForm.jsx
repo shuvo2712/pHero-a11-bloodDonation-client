@@ -2,6 +2,7 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState, useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
+import { API_URL } from "../api/config";
 
 const CheckoutForm = ({ amount, onSuccess, onClose }) => {
   const stripe = useStripe();
@@ -29,7 +30,7 @@ const CheckoutForm = ({ amount, onSuccess, onClose }) => {
       const token = localStorage.getItem("token");
       
       // 1. Create PaymentIntent on server
-      const res = await fetch("http://localhost:5000/create-payment-intent", {
+      const res = await fetch(`${API_URL}/create-payment-intent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +76,7 @@ const CheckoutForm = ({ amount, onSuccess, onClose }) => {
           transactionId: paymentIntent.id,
         };
 
-        const saveRes = await fetch("http://localhost:5000/funding", {
+        const saveRes = await fetch(`${API_URL}/funding`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

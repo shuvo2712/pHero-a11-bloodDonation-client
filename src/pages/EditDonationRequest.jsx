@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { districts } from "../assets/districts";
 import { upazilas } from "../assets/upazilas";
+import { API_URL } from "../api/config";
 import { 
   FaUser, 
   FaEnvelope, 
@@ -43,7 +44,7 @@ const EditDonationRequest = () => {
   // Fetch the donation request details on mount
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:5000/donation-requests/${id}`)
+    fetch(`${API_URL}/donation-requests/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch request details.");
         return res.json();
@@ -131,7 +132,7 @@ const EditDonationRequest = () => {
       requestMessage
     };
 
-    fetch(`http://localhost:5000/donation-requests/${id}`, {
+    fetch(`${API_URL}/donation-requests/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"

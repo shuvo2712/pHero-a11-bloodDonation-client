@@ -3,6 +3,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
 import { districts } from "../assets/districts";
 import { upazilas } from "../assets/upazilas";
+import { API_URL } from "../api/config";
 import { 
   FaUser, 
   FaEnvelope, 
@@ -34,7 +35,7 @@ const Profile = () => {
   const fetchProfile = () => {
     if (user?.email) {
       setLoading(true);
-      fetch(`http://localhost:5000/users/${user.email}`)
+      fetch(`${API_URL}/users/${user.email}`)
         .then((res) => res.json())
         .then((data) => {
           setProfile(data);
@@ -138,7 +139,7 @@ const Profile = () => {
       };
 
       // 4. Update Database
-      const patchRes = await fetch(`http://localhost:5000/users/${profile._id}`, {
+      const patchRes = await fetch(`${API_URL}/users/${profile._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

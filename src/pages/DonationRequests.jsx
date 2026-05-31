@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaUser } from "react-icons/fa";
+import { API_URL } from "../api/config";
 
 const DonationRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/donation-requests/public")
+    fetch(`${API_URL}/donation-requests/public`)
+
       .then((res) => res.json())
       .then((data) => {
         setRequests(data);

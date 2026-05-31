@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { districts } from "../assets/districts";
 import { upazilas } from "../assets/upazilas";
 import { FaSearch, FaTint, FaMapMarkerAlt, FaFilePdf, FaUserCircle } from "react-icons/fa";
+import { API_URL } from "../api/config";
 
 const Search = () => {
   const [bloodGroup, setBloodGroup] = useState("");
@@ -41,7 +42,7 @@ const Search = () => {
     setLoading(true);
     setSearched(true);
 
-    fetch(`http://localhost:5000/search?${params.toString()}`)
+    fetch(`${API_URL}/search?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         setDonors(data);

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import { FaHeart, FaHospital, FaMapMarkerAlt, FaCalendarAlt, FaClock, FaUser, FaEnvelope, FaCommentAlt, FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { API_URL } from "../api/config";
 
 const DonationRequestDetails = () => {
   const { id } = useParams();
@@ -13,7 +14,7 @@ const DonationRequestDetails = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/donation-requests/${id}`)
+    fetch(`${API_URL}/donation-requests/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch request details");
@@ -35,7 +36,7 @@ const DonationRequestDetails = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    fetch(`http://localhost:5000/donation-requests/status/${id}`, {
+    fetch(`${API_URL}/donation-requests/status/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../components/CheckoutForm";
+import { API_URL } from "../api/config";
 import { 
   FaDollarSign, 
   FaHeart, 
@@ -34,7 +35,7 @@ const Funding = () => {
   const fetchFundingData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/funding");
+      const res = await fetch(`${API_URL}/funding`);
       if (!res.ok) throw new Error("Failed to fetch funding transactions.");
       const data = await res.json();
       setFunds(data || []);

@@ -4,6 +4,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
 import { districts } from "../assets/districts";
 import { upazilas } from "../assets/upazilas";
+import { API_URL } from "../api/config";
 import { 
   FaUser, 
   FaEnvelope, 
@@ -46,7 +47,7 @@ const CreateDonationRequest = () => {
   useEffect(() => {
     if (user?.email) {
       setProfileLoading(true);
-      fetch(`http://localhost:5000/users/${user.email}`)
+      fetch(`${API_URL}/users/${user.email}`)
         .then((res) => {
           if (!res.ok) {
             throw new Error("Failed to fetch user data");
@@ -118,7 +119,7 @@ const CreateDonationRequest = () => {
       donationStatus: "pending" // Default status is hidden from form
     };
 
-    fetch("http://localhost:5000/donation-requests", {
+    fetch(`${API_URL}/donation-requests`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_URL } from "../api/config";
 import {
   FaHeartbeat,
   FaFilter,
@@ -37,7 +38,7 @@ const AllDonationRequests = () => {
     try {
       const token = localStorage.getItem("token");
       const statusQuery = statusFilter !== "all" ? `&status=${statusFilter}` : "";
-      const url = `http://localhost:5000/donation-requests?page=${page}&limit=${limit}${statusQuery}`;
+      const url = `${API_URL}/donation-requests?page=${page}&limit=${limit}${statusQuery}`;
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -58,7 +59,7 @@ const AllDonationRequests = () => {
   // Fetch the current user's role to conditionally show admin-only actions
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:5000/users/${user.email}`)
+    fetch(`${API_URL}/users/${user.email}`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.role) setUserRole(data.role);
@@ -79,7 +80,7 @@ const AllDonationRequests = () => {
     setActionLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/donation-requests/status/${requestId}`,
+        `${API_URL}/donation-requests/status/${requestId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -107,7 +108,7 @@ const AllDonationRequests = () => {
     setActionLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/donation-requests/${requestToDelete._id}`,
+        `${API_URL}/donation-requests/${requestToDelete._id}`,
         { method: "DELETE" }
       );
       if (!res.ok) throw new Error("Failed to delete request.");

@@ -7,6 +7,7 @@ import {
   updateProfile 
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
+import { API_URL } from "../api/config";
 
 export const AuthContext = createContext(null);
 
@@ -40,10 +41,11 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
       setLoading(false);
-
+      
       if (currentUser) {
         // Get JWT token from server and store it in localStorage
-        fetch("http://localhost:5000/jwt", {
+        fetch(`${API_URL}/jwt`, {
+
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: currentUser.email }),

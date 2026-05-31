@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { AuthContext } from "../providers/AuthProvider";
 import { districts } from "../assets/districts";
 import { upazilas } from "../assets/upazilas";
+import { API_URL } from "../api/config";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ const Register = () => {
         upazila: upazilaName,
       };
 
-      const dbResponse = await fetch("http://localhost:5000/users", {
+      const dbResponse = await fetch(`${API_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
