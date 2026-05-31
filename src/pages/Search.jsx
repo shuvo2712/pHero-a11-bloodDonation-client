@@ -59,7 +59,7 @@ const Search = () => {
 
   return (
     <div className="min-h-screen bg-base-200 py-10 px-4">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto animate-slide-up">
 
         {/* Page Header */}
         <div className="text-center mb-8">
