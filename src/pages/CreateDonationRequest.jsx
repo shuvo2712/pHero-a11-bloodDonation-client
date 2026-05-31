@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
 import { districts } from "../assets/districts";
@@ -18,6 +19,7 @@ import {
 
 const CreateDonationRequest = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   // User Profile Status State
   const [profile, setProfile] = useState(null);
@@ -116,9 +118,33 @@ const CreateDonationRequest = () => {
       donationStatus: "pending" // Default status is hidden from form
     };
 
-    console.log("Create donation request submission payload:", requestData);
-    toast.success("Request form validated successfully! (Step 17: UI is complete)");
-    setSubmitLoading(false);
+    fetch("http://localhost:5000/donation-requests", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestData)
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to create donation request");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setSubmitLoading(false);
+        if (data.insertedId) {
+          toast.success("Blood donation request created successfully!");
+          navigate("/dashboard/my-donation-requests");
+        } else {
+          toast.error("Failed to create donation request. Please try again.");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.message || "An error occurred. Please try again.");
+        setSubmitLoading(false);
+      });
   };
 
   if (profileLoading) {
